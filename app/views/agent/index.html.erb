@@ -1,0 +1,36 @@
+<h1>Локальный ИИ-агент</h1>
+
+<p>Агент подготовит изменения для выбранных файлов. Их содержимое будет отправлено Groq для генерации.
+Никакие изменения не применяются без твоего подтверждения.</p>
+
+<% if @error %>
+  <p role="alert"><%= @error %></p>
+<% end %>
+
+<% if notice %>
+  <p role="status"><%= notice %></p>
+<% end %>
+
+<%= form_with url: "/agent/proposals", method: :post do |form| %>
+  <p>
+    <%= form.label :scope, "Что улучшать?" %>
+    <%= form.select :scope, [["Код агента", "agent"], ["Rails-магазин", "store"]], selected: params[:scope] || "agent" %>
+  </p>
+  <p>
+    <%= form.label :paths, "Файлы (по одному пути на строку; новый файл тоже укажи здесь)" %>
+    <%= form.text_area :paths, rows: 5, required: true, value: params[:paths] %>
+  </p>
+  <p>
+    <%= form.label :task, "Что улучшить?" %>
+    <%= form.text_area :task, rows: 4, required: true, value: params[:task] %>
+  </p>
+  <%= form.submit "Подготовить diff" %>
+<% end %>
+
+<% if @proposal %>
+  <h2>Предлагаемые изменения</h2>
+  <pre style="overflow-x: auto; white-space: pre-wrap"><%= @proposal.fetch("diff") %></pre>
+  <% if @proposal["status"] == "pending" %>
+    <%= button_to "Применить изменения", "/agent/proposals/#{@proposal.fetch('id')}/apply", method: :post %>
+  <% end %>
+<% end %>

@@ -1,0 +1,40 @@
+#!/usr/bin/env ruby
+
+require_relative "../config/environment"
+require "optparse"
+
+command = ARGV.shift
+options = {}
+
+OptionParser.new do |parser|
+  parser.banner = "Использование: bin/agent improve --scope agent|store --files PATH[,PATH...] -- TASK"
+  parser.on("--scope SCOPE", %w[agent store]) { |scope| options[:scope] = scope }
+  parser.on("--files PATHS", Array) { |paths| options[:paths] = paths }
+end.parse!
+
+case command
+when "improve"
+  task = ARGV.join(" ").strip
+  unless options[:scope] && options[:paths] && task.present?
+    abort "Нужно указать область, файлы и задачу. Использование: bin/agent improve --scope agent --files ai_agent/lib/code_agent.rb -- 'Улучши обработку ошибок'"
+  end
+
+  agent = CodeAgent.new
+  proposal = agent.propose(scope: options[:scope], paths: options[:paths], task: task)
+  puts proposal.fetch("diff")
+  print "Применить эти изменения? [y/N] "
+  if $stdin.gets&.strip&.casecmp("y")&.zero?
+    agent.apply(proposal.fetch("id"))
+    puts "Изменения применены. Запусти тесты и проверь результат."
+  else
+    puts "Изменения не применены. Предложение сохранено: #{proposal.fetch('id')}"
+  end
+when "apply"
+  proposal_id = ARGV.shift
+  abort "Использование: bin/agent apply PROPOSAL_ID" unless proposal_id
+
+  CodeAgent.new.apply(proposal_id)
+  puts "Изменения применены. Запусти тесты и проверь результат."
+else
+  abort "Команда не распознана. Использование: bin/agent improve --scope agent|store --files PATH[,PATH...] -- TASK"
+end
