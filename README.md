@@ -4,6 +4,10 @@
 
 Rails-приложение интернет-магазина с калькулятором на ИИ и локальным ИИ-агентом для подготовки улучшений кода.
 
+## Обратный отсчёт
+
+Живая GitHub Pages-страница отсчитывает время до 26 октября 2028 года: https://mosaicin.github.io/putindorm/
+
 ## Локальный запуск
 
 ```sh
@@ -27,23 +31,16 @@ bin/rails server
 
 ### Первое развёртывание
 
-1. Создай проект в [Neon](https://console.neon.tech/) на бесплатном тарифе, выбери регион AWS Oregon (`aws-us-west-2`) для близости к Render Oregon. Приложению нужны четыре отдельные базы одного проекта: `neondb` (основная), `putindorm_cache`, `putindorm_queue` и `putindorm_cable`. В Neon SQL Editor, подключившись к `neondb`, создай дополнительные базы:
-
-   ```sql
-   CREATE DATABASE putindorm_cache;
-   CREATE DATABASE putindorm_queue;
-   CREATE DATABASE putindorm_cable;
-   ```
-
-   Для каждой базы в Neon возьми pooled connection string. Не добавляй строки подключения в Git или чат.
-2. Создай аккаунт в [Render](https://dashboard.render.com/) и подключи GitHub-репозиторий `mosaicin/putindorm`.
-3. В Render выбери **New → Blueprint**, укажи этот репозиторий и ветку `main`. Render найдёт `render.yaml` и предложит создать веб-сервис `putindorm`.
-4. При создании добавь секреты:
-   - `DATABASE_URL` — pooled connection string Neon для `neondb` с `sslmode=require`.
-   - `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, `CABLE_DATABASE_URL` — такие же строки для одноимённых баз. Можно скопировать основную строку и заменить имя базы в пути URL.
+1. В [Neon Console](https://console.neon.tech/) открой проект и выбери нужную ветку, например `производство`. В **Databases** создай в этой ветке базы `putindorm_cache`, `putindorm_queue` и `putindorm_cable`; стандартную основную базу проекта оставь как есть (обычно это `neondb`).
+2. В верхней панели нажми **Connect** и выбери ветку, compute, базу и роль. Для каждой из четырёх баз скопируй connection string с выключенным **Connection pooling**. Rails запускает миграции при старте, поэтому для этих URL нужен прямой endpoint (имя хоста без `-pooler`). Не добавляй строки подключения в Git или чат.
+3. Создай аккаунт в [Render](https://dashboard.render.com/) и подключи GitHub-репозиторий `mosaicin/putindorm`.
+4. В Render выбери **New → Blueprint**, укажи этот репозиторий и ветку `main`. Render найдёт `render.yaml` и предложит создать веб-сервис `putindorm`.
+5. При создании добавь секреты:
+   - `DATABASE_URL` — прямой connection string основной базы с `sslmode=require`.
+   - `CACHE_DATABASE_URL`, `QUEUE_DATABASE_URL`, `CABLE_DATABASE_URL` — прямые connection strings соответствующих баз. Для каждой базы копируй строку через **Connect**, не меняй имя базы вручную.
    - `RAILS_MASTER_KEY` — значение из локального `config/master.key`. Не добавляй сам файл в Git.
-5. Запусти Blueprint. При первом запуске контейнер выполнит `bin/rails db:prepare`. Дождись успешного деплоя и открой URL сервиса из панели Render.
-6. Если нужен ИИ-калькулятор, отдельно добавь `GROQ_API_KEY` в **Render → сервис → Environment**. Не копируй ключ в репозиторий.
+6. Запусти Blueprint. При первом запуске контейнер выполнит `bin/rails db:prepare`. Дождись успешного деплоя и открой URL сервиса из панели Render.
+7. Если нужен ИИ-калькулятор, отдельно добавь `GROQ_API_KEY` в **Render → сервис → Environment**. Не копируй ключ в репозиторий.
 
 ### Управление магазином
 
