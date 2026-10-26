@@ -1,11 +1,10 @@
 Rails.application.routes.draw do
+  root "products#index"
+
   resource :session
   resources :passwords, param: :token
 
-  # Товары
-  get  "/products",     to: "products#index"
-  get  "/products/new", to: "products#new"      # ← добавили
-  post "/products",     to: "products#create"
+  resources :products
 
   # Калькулятор через ИИ
   get  "/calculator",     to: "calculator#index"   # ← добавили

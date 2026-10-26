@@ -1,11 +1,37 @@
-<h1>Products</h1>
+<main class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h1 class="mb-0">Products</h1>
+    <%= link_to "New product", new_product_path, class: "btn btn-primary" %>
+  </div>
 
-<%= link_to "New product", new_product_path %>
+  <div id="products" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3 mb-5">
+    <% @products.each do |product| %>
+      <div class="col">
+        <div class="card h-100">
+          <div class="card-body">
+            <%= link_to product.name, product, class: "card-title link-underline link-underline-opacity-0" %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
 
-<div id="products">
-  <% @products.each do |product| %>
-    <div>
-      <%= link_to product.name, product %>
+  <section class="rounded bg-body-tertiary p-4 p-md-5" aria-labelledby="journey-heading">
+    <h2 id="journey-heading" class="mb-2">Journey</h2>
+    <p class="text-body-secondary mb-4">Популярные песни группы. Слушайте на официальном YouTube-канале Journey.</p>
+
+    <div class="list-group">
+      <% [
+        ["Don't Stop Believin'", "Don%27t%20Stop%20Believin"],
+        ["Any Way You Want It", "Any%20Way%20You%20Want%20It"],
+        ["Faithfully", "Faithfully"],
+        ["Lights", "Lights"]
+      ].each do |title, query| %>
+        <div class="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <span class="fw-semibold"><%= title %></span>
+          <%= link_to "Слушать на YouTube", "https://www.youtube.com/@journey/search?query=#{query}", class: "btn btn-outline-primary btn-sm", target: "_blank", rel: "noopener noreferrer" %>
+        </div>
+      <% end %>
     </div>
-  <% end %>
-</div>
+  </section>
+</main>
