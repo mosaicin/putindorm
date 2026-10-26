@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: putindorm
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: CACHE_DATABASE_URL
+        sync: false
+      - key: QUEUE_DATABASE_URL
+        sync: false
+      - key: CABLE_DATABASE_URL
+        sync: false
+      - key: RAILS_MASTER_KEY
+        sync: false
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"

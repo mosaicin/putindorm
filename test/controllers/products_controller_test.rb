@@ -1,9 +1,7 @@
 require "test_helper"
 
 class ProductsControllerTest < ActionDispatch::IntegrationTest
-  test "index displays the product catalog and Journey music links" do
-    sign_in_as(User.take)
-
+  test "index displays the public product catalog and Journey music links" do
     get root_path
 
     assert_response :success
