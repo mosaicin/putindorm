@@ -1,0 +1,90 @@
+<section class="rounded bg-body-tertiary p-4 p-md-5" aria-labelledby="assistant-heading">
+  <h2 id="assistant-heading" class="mb-2">ИИ-конструктор страниц</h2>
+  <p class="text-body-secondary mb-4">Готовый пример ниже: цвета ведут к своим ассоциациям. Попросите ИИ изменить страницу или отредактируйте код вручную.</p>
+
+  <form id="ai-assistant-form" action="<%= calculator_ask_path %>" method="post">
+    <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
+    <label for="ai-assistant-prompt" class="form-label">Что создать или изменить?</label>
+    <textarea id="ai-assistant-prompt" name="prompt" class="form-control mb-3" rows="3" maxlength="4000" required placeholder="Например: сделай HTML-страницу с кнопками разных цветов и коричневой кнопкой"></textarea>
+    <button id="ai-assistant-submit" type="submit" class="btn btn-primary">Изменить страницу с ИИ</button>
+    <span id="ai-assistant-status" class="ms-2" role="status" aria-live="polite"></span>
+  </form>
+
+  <div class="row g-4 mt-2">
+    <div class="col-12 col-xl-7">
+      <h3 class="h5">Предпросмотр</h3>
+      <p id="ai-assistant-empty" class="text-body-secondary" hidden>Предпросмотр появится здесь.</p>
+      <iframe id="ai-assistant-preview" title="Предпросмотр HTML-страницы" class="w-100 bg-white border rounded" style="min-height: 480px" sandbox hidden></iframe>
+    </div>
+    <div class="col-12 col-xl-5">
+      <label for="ai-assistant-html" class="form-label h5">HTML-код <span class="text-body-secondary fs-6">(можно редактировать)</span></label>
+      <textarea id="ai-assistant-html" class="form-control font-monospace" rows="20" maxlength="20000" spellcheck="false" aria-label="HTML-код страницы" placeholder="Код страницы появится после генерации"></textarea>
+      <p class="form-text">Предпросмотр обновляется при каждом изменении кода. JavaScript в предпросмотре отключён.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  (() => {
+    const form = document.getElementById("ai-assistant-form");
+    const button = document.getElementById("ai-assistant-submit");
+    const status = document.getElementById("ai-assistant-status");
+    const source = document.getElementById("ai-assistant-html");
+    const preview = document.getElementById("ai-assistant-preview");
+    const empty = document.getElementById("ai-assistant-empty");
+
+    const updatePreview = () => {
+      preview.srcdoc = source.value;
+      preview.hidden = source.value.trim() === "";
+      empty.hidden = !preview.hidden;
+    };
+
+    fetch("/color-showcase.html")
+      .then((response) => {
+        if (!response.ok) throw new Error("Не удалось загрузить пример страницы.");
+        return response.text();
+      })
+      .then((html) => {
+        if (!source.value.trim()) source.value = html;
+        updatePreview();
+      })
+      .catch((error) => {
+        status.textContent = error instanceof Error ? error.message : "Не удалось загрузить пример страницы.";
+      });
+
+    source.addEventListener("input", updatePreview);
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const prompt = document.getElementById("ai-assistant-prompt").value.trim();
+      if (!prompt) {
+        status.textContent = "Введите вопрос.";
+        return;
+      }
+      button.disabled = true;
+      button.disabled = true;
+      status.textContent = "ИИ создаёт страницу...";
+
+      try {
+        const response = await fetch(form.action, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": form.querySelector("[name='authenticity_token']").value
+          },
+          body: JSON.stringify({ prompt, html: source.value })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Не удалось получить ответ.");
+
+        source.value = data.html;
+        updatePreview();
+        status.textContent = "Страница обновлена.";
+      } catch (error) {
+        status.textContent = error instanceof Error ? error.message : "Ошибка сети. Попробуйте ещё раз.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  })();
+</script>

@@ -10,7 +10,7 @@ class AiService
     )
   end
 
-  def ask(prompt, system: "Ты опытный программист. Пиши чистый код с комментариями на русском.")
+  def ask(prompt, system: "Ты полезный ИИ-помощник. Отвечай ясно и по-русски; технические темы объясняй пошагово.")
     response = @client.chat(
       parameters: {
         model: MODEL,

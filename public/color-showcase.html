@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Цвета и ассоциации</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: system-ui, sans-serif;
+      color: #242424;
+      background: #f5f3ef;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+
+    h1, .intro {
+      text-align: center;
+    }
+
+    .intro {
+      color: #626262;
+      margin-bottom: 2rem;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      display: grid;
+      gap: 0.75rem;
+      align-content: start;
+      padding: 1.25rem;
+      background: white;
+      border: 1px solid #e6e1d9;
+      border-radius: 1rem;
+      box-shadow: 0 4px 14px #0000000a;
+    }
+
+    .swatch {
+      display: grid;
+      min-height: 5rem;
+      place-items: center;
+      border-radius: 0.7rem;
+      color: white;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 160ms ease, filter 160ms ease;
+    }
+
+    .swatch:hover, .swatch:focus-visible {
+      transform: translateY(-3px);
+      filter: brightness(1.08);
+    }
+
+    a {
+      color: #315a82;
+    }
+
+    .association {
+      margin: 0;
+    }
+
+    .history {
+      margin: 0;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e6e1d9;
+      color: #626262;
+      font-size: 0.9rem;
+    }
+
+    .snail {
+      display: block;
+      width: min(100%, 420px);
+      height: auto;
+      margin: 0 auto 1.5rem;
+    }
+
+    .red { background: #d94343; }
+    .green { background: #278454; }
+    .blue { background: #347db6; }
+    .orange { background: #d96b20; }
+    .purple { background: #8051a5; }
+    .brown { background: #8b4513; }
+  </style>
+</head>
+<body>
+  <h1>На что похожи цвета?</h1>
+  <p class="intro">Нажмите на цвет или ссылку, чтобы перейти к его ассоциации.</p>
+  <img class="snail" src="/snail-kgb.svg" alt="Мультяшная улитка с надписью «КГБ» на раковине">
+
+  <main class="palette">
+    <article class="card">
+      <a class="swatch red" href="https://en.wikipedia.org/wiki/Strawberry">Красный</a>
+      <p class="association">Спелая клубника, маки и энергия.</p>
+      <a href="https://en.wikipedia.org/wiki/Strawberry">Клубника и её яркий цвет</a>
+    </article>
+
+    <article class="card">
+      <a class="swatch green" href="https://en.wikipedia.org/wiki/Forest">Зелёный</a>
+      <p class="association">Лесная листва, свежесть и рост.</p>
+      <a href="https://en.wikipedia.org/wiki/Forest">Леса Земли</a>
+    </article>
+
+    <article class="card">
+      <a class="swatch blue" href="https://en.wikipedia.org/wiki/Ocean">Синий</a>
+      <p class="association">Море и небо, простор и спокойствие.</p>
+      <a href="https://en.wikipedia.org/wiki/Ocean">Мировой океан</a>
+    </article>
+
+    <article class="card">
+      <a class="swatch orange" href="https://en.wikipedia.org/wiki/Orange_(fruit)">Оранжевый</a>
+      <p class="association">Апельсин, тепло и осенние листья.</p>
+      <a href="https://en.wikipedia.org/wiki/Orange_(fruit)">Апельсины</a>
+    </article>
+
+    <article class="card">
+      <a class="swatch purple" href="https://en.wikipedia.org/wiki/Lavender">Фиолетовый</a>
+      <p class="association">Лаванда, цветы и вечернее небо.</p>
+      <a href="https://en.wikipedia.org/wiki/Lavender">Цветущая лаванда</a>
+    </article>
+
+    <article class="card">
+      <a class="swatch brown" href="https://en.wikipedia.org/wiki/Chocolate">Коричневый</a>
+      <p class="association">Шоколад, древесная кора и тёплая земля.</p>
+      <a href="https://en.wikipedia.org/wiki/Chocolate">История шоколада</a>
+      <p class="history">Историческая ассоциация: «коричневыми рубашками» называли участников СА в нацистской Германии.
+        <a href="https://en.wikipedia.org/wiki/Sturmabteilung">Краткая справка о СА</a>
+      </p>
+    </article>
+  </main>
+</body>
+</html>
