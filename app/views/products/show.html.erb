@@ -1,5 +1,33 @@
-<h1><%= @product.name %></h1>
+<main class="container py-5">
+  <%= link_to "← Назад к каталогу", products_path, class: "btn btn-link px-0 mb-4" %>
 
-<%= link_to "Back", products_path %>
-<%= link_to "Edit", edit_product_path(@product) %>
-<%= button_to "Delete", @product, method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+  <div class="card shadow-sm border-0 overflow-hidden">
+    <div class="row g-0">
+      <div class="col-lg-5">
+        <img src="<%= @product.image_url %>" alt="<%= @product.name %>" class="img-fluid h-100 w-100 object-fit-cover" style="min-height: 360px;">
+      </div>
+
+      <div class="col-lg-7">
+        <div class="card-body p-4 p-lg-5">
+          <span class="badge bg-primary-subtle text-primary-emphasis mb-3"><%= @product.category %></span>
+          <h1 class="display-6 fw-bold mb-3"><%= @product.name %></h1>
+
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="fs-3 fw-bold text-dark"><%= number_to_currency(@product.price, unit: "₽", separator: ",", format: "%n %u") %></span>
+            <% if @product.featured %>
+              <span class="badge bg-success-subtle text-success-emphasis">Популярный</span>
+            <% end %>
+          </div>
+
+          <p class="lead text-body-secondary"><%= @product.description %></p>
+
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <%= button_to "Добавить в корзину", add_to_cart_path(@product), method: :post, class: "btn btn-primary btn-lg" %>
+            <%= link_to "Edit", edit_product_path(@product), class: "btn btn-outline-secondary btn-lg" %>
+            <%= button_to "Delete", @product, method: :delete, class: "btn btn-outline-danger btn-lg", data: { turbo_confirm: "Are you sure?" } %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

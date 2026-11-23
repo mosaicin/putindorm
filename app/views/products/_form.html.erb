@@ -1,10 +1,41 @@
-<%= form_with model: product do |form| %>
-  <div>
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+<%= form_with model: product, class: "row g-3", data: { controller: "product-description", product_description_url_value: generate_description_products_path } do |form| %>
+  <div class="col-md-6">
+    <%= form.label :name, class: "form-label" %>
+    <%= form.text_field :name, class: "form-control", data: { product_description_target: "name" } %>
   </div>
 
-  <div>
-    <%= form.submit %>
+  <div class="col-md-3">
+    <%= form.label :price, class: "form-label" %>
+    <%= form.number_field :price, step: 0.01, min: 0, class: "form-control" %>
+  </div>
+
+  <div class="col-md-3">
+    <%= form.label :category, class: "form-label" %>
+    <%= form.text_field :category, class: "form-control", data: { product_description_target: "category" } %>
+  </div>
+
+  <div class="col-12">
+    <%= form.label :image_url, class: "form-label" %>
+    <%= form.text_field :image_url, class: "form-control" %>
+  </div>
+
+  <div class="col-12">
+    <%= form.label :description, class: "form-label" %>
+    <%= form.text_area :description, rows: 4, class: "form-control", data: { product_description_target: "description" } %>
+    <div class="d-flex flex-wrap align-items-center gap-3 mt-2">
+      <button type="button" class="btn btn-outline-primary btn-sm" data-action="product-description#generate" data-product-description-target="button">Создать черновик с ИИ</button>
+      <span class="small text-body-secondary" role="status" aria-live="polite" data-product-description-target="status"></span>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="form-check">
+      <%= form.check_box :featured, class: "form-check-input" %>
+      <%= form.label :featured, "Показывать на главной", class: "form-check-label" %>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <%= form.submit class: "btn btn-primary" %>
   </div>
 <% end %>

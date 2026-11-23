@@ -26,6 +26,24 @@
   </head>
 
   <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom sticky-top">
+      <div class="container">
+        <%= link_to "Store", root_path, class: "navbar-brand fw-bold" %>
+        <div class="ms-auto d-flex gap-3 align-items-center">
+          <%= link_to "Каталог", root_path, class: "text-decoration-none text-body" %>
+          <%= link_to "Корзина (#{cart_count})", cart_path, class: "text-decoration-none text-body" %>
+          <% if current_user %>
+            <% if admin? %>
+              <%= link_to "Добавить товар", new_product_path, class: "text-decoration-none text-body" %>
+            <% end %>
+            <%= button_to "Выйти", session_path, method: :delete, class: "btn btn-outline-secondary btn-sm" %>
+          <% else %>
+            <%= link_to "Войти", new_session_path, class: "text-decoration-none text-body" %>
+          <% end %>
+        </div>
+      </div>
+    </nav>
+
     <%= yield %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
   </body>

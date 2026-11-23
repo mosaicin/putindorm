@@ -1,0 +1,89 @@
+<main class="container py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <h1 class="mb-0">Корзина</h1>
+    <%= link_to "Продолжить покупки", root_path, class: "btn btn-outline-primary" %>
+  </div>
+
+  <% if @cart_items.blank? %>
+    <div class="card border-0 shadow-sm p-5 text-center">
+      <h2 class="h4 mb-3">Ваша корзина пуста</h2>
+      <p class="text-body-secondary mb-0">Добавьте товары из каталога и вернитесь сюда для оформления заказа.</p>
+    </div>
+  <% else %>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <% @cart_items.each do |item| %>
+          <% product = item[:product] %>
+          <div class="card border-0 shadow-sm mb-3">
+            <div class="row g-0 align-items-center">
+              <div class="col-md-3">
+                <img src="<%= product.image_url %>" alt="<%= product.name %>" class="img-fluid h-100 w-100 object-fit-cover" style="max-height: 180px;">
+              </div>
+              <div class="col-md-6">
+                <div class="card-body">
+                  <h2 class="h5 mb-2"><%= link_to product.name, product, class: "link-dark text-decoration-none" %></h2>
+                  <p class="text-body-secondary mb-2"><%= truncate(product.description, length: 120) %></p>
+                  <p class="fw-bold mb-0"><%= number_to_currency(product.price, unit: "₽", separator: ",", format: "%n %u") %></p>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card-body text-end">
+                  <%= form_with url: update_cart_item_path(product.id), method: :patch, local: true, class: "d-flex align-items-center gap-2 justify-content-end" do %>
+                    <%= number_field_tag :quantity, item[:quantity], min: 1, class: "form-control", style: "max-width: 90px;" %>
+                    <%= submit_tag "Обновить", class: "btn btn-sm btn-outline-secondary" %>
+                  <% end %>
+
+                  <%= button_to "Удалить", remove_from_cart_path(product.id), method: :delete, class: "btn btn-link text-danger px-0 mt-2" %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm p-4">
+          <h2 class="h4 mb-3">Итог</h2>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Товары</span>
+            <span><%= number_to_currency(@total, unit: "₽", separator: ",", format: "%n %u") %></span>
+          </div>
+          <div class="d-flex justify-content-between mb-3">
+            <span>Доставка</span>
+            <span>0 ₽</span>
+          </div>
+          <hr>
+          <div class="d-flex justify-content-between fw-bold fs-5 mb-4">
+            <span>Итого</span>
+            <span><%= number_to_currency(@total, unit: "₽", separator: ",", format: "%n %u") %></span>
+          </div>
+          <p class="small text-body-secondary">После оформления вы перейдёте на защищённую страницу ЮKassa. Доступные способы оплаты будут показаны там.</p>
+
+          <%= form_with url: checkout_cart_path, method: :post, local: true do |form| %>
+            <div class="mb-3">
+              <%= form.label :name, "Ваше имя", class: "form-label" %>
+              <%= form.text_field :name, name: "order[name]", class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :email, "Email", class: "form-label" %>
+              <%= form.email_field :email, name: "order[email]", class: "form-control", required: true %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :phone, "Телефон", class: "form-label" %>
+              <%= form.telephone_field :phone, name: "order[phone]", class: "form-control" %>
+            </div>
+
+            <div class="mb-3">
+              <%= form.label :address, "Адрес доставки", class: "form-label" %>
+              <%= form.text_area :address, name: "order[address]", rows: 3, class: "form-control", required: true %>
+            </div>
+
+            <%= form.submit "Перейти к оплате", class: "btn btn-primary w-100" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</main>
